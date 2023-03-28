@@ -5,11 +5,21 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
-
-class Authcontroller extends Controller
+use Auth;
+use Illuminate\Support\Facades\Session;
+//use Illuminate\Support\Facades\Auth;
+class AuthController extends Controller
 {
     public function loadRegister()
     {
+        if(Auth::user() && Auth::user()->is_admin == 1)
+        {
+            return redirect('/admin/dashboard');
+            
+        }else if(Auth::user() && Auth::user()->is_admin == 0){
+            return redirect('/dashboard');
+
+        }
         return view('register');
     }
 
@@ -29,4 +39,59 @@ class Authcontroller extends Controller
 
         return back()->with('success','Your Registration was successfull.');
     }
+
+    public function loadLogin()
+    {
+        if(Auth::user() && Auth::user()->is_admin == 1)
+        {
+            return redirect('/admin/dashboard');
+            
+        }else if(Auth::user() && Auth::user()->is_admin == 0){
+            return redirect('/dashboard');
+
+        }
+        return view('login');
+    }
+
+    public function userLogin(Request $request)
+    {
+        $request->validate([
+            'email'=>'string|required|email',
+            'password'=>'string|required'
+        ]);
+
+        $userCredential = $request->only('email','password');
+        if(Auth::attempt($userCredential))
+        {
+            if(Auth::user()->is_admin == 1){
+                return redirect('/admin/dashboard');
+
+            }
+            else{
+                return redirect('/dashboard');
+
+            }
+
+        }
+        else {
+            return back()->with('error','Username & Passsword is incorrect');
+        }
+    }
+
+    public function loadDashboard()
+    {
+        return view('student.dashboard');
+    }
+
+    public function adminDashboard()
+    {
+        return view('admin.dashboard');
+    }
+    public function logout(Request $request)
+    {
+        $request->session()->flush();
+        Auth::logout();
+        return redirect('/');
+    }
+    
 }

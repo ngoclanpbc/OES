@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Authcontroller;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProductsController;
 /*
 |--------------------------------------------------------------------------
@@ -13,24 +13,30 @@ use App\Http\Controllers\ProductsController;
 | contains the "web" middleware group. Now create something great!
 |
 */
-/*
 
-
-Route::get('/users',function () {
-    return 'This is the users page';
-});
-Route::get('/foods',function (){
-   return redirect('/users');
-});
-Route::get('products', [
-    ProductsController::class,
-    'index'
-]);
-
-*/
 Route::get('/', function () {
     return view('welcome');
     //return env('MY_NAME');
 });
-Route::get('/register',[Authcontroller::class,'loadRegister']);
-Route::post('/register',[Authcontroller::class,'studentRegister'])->name('studentRegister');
+
+Route::get('/register',[AuthController::class,'loadRegister']);
+Route::post('/register',[AuthController::class,'studentRegister'])->name('studentRegister');
+
+Route::get('/login',function(){
+    return redirect('/');
+});
+
+Route::get('/',[AuthController::class,'loadLogin']);
+Route::post('/login',[AuthController::class,'userLogin'])->name('userLogin');
+
+Route::get('/logout',[AuthController::class,'logout']);
+
+Route::group(['middleware'=>['web','checkAdmin']],function(){
+    Route::get('/admin/dashboard',[AuthController::class,'adminDashboard']);
+});
+
+Route::group(['middleware'=>['web','checkStudent']],function(){
+    Route::get('/dashboard',[AuthController::class,'loadDashboard']);
+});
+
+
