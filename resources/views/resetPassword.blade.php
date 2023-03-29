@@ -1,7 +1,7 @@
 @extends('layout/layout-common')
 @section('content')
 
-    <h1> Login </h1>
+    <h1> Reset Password </h1>
 
     @if($errors->any())
         @foreach($errors->all() as $error)
@@ -9,20 +9,16 @@
         @endforeach
     @endif
 
-    @if(Session::has('error'))
-        <p style="color:red;">{{Session::get('error')}}</p>
-    @endif
-
-    <form action="{{ route('userLogin')}}" method="POST">
+    <form action="{{ route('resetPassword')}}" method="POST">
         @csrf
-        <input type="email" name="email" placeholder="Enter Email">
+        <input type="hidden" name="id" value="{{ $user[0]['id']}}">
         <br><br>
         <input type="password" name="password" placeholder="Enter Password">
         <br><br>
-        <input type="submit" value="Login">
+        <input type="password" name="password_confirmation" placeholder="Enter Confirm Password">
+        <br><br>
+        <input type="submit" value="Reset Password">
         <br><br>
     </form>
-
-    <a href="/forget-password"> Forget Password </a>
     
 @endsection
