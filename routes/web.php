@@ -42,7 +42,13 @@ Route::post('/reset-password',[AuthController::class,'resetPassword'])->name('re
 Route::group(['middleware'=>['web','checkAdmin']],function(){
     Route::get('/admin/dashboard',[AuthController::class,'adminDashboard']);
 
+//subject route
+
     Route::post('/add-subject',[AdminController::class,'addSubject'])->name('addSubject');
+    Route::post('/edit-subject',[AdminController::class,'editSubject'])->name('editSubject');
+
+    Route::post('/delete-subject',[AdminController::class,'deleteSubject'])->name('deleteSubject');
+
 });
 
 Route::group(['middleware'=>['web','checkStudent']],function(){
