@@ -64,8 +64,9 @@ class AdminController extends Controller
      //exam dashboard load
      public function examDashboard()
      {
-        $subjects = Subject::all();
-        return view('admin.exam-dashboard',['subjects'=>$subjects]);
+         $subjects = Subject::all();
+         $exams = Exam::with('subjects')->get();
+         return view('admin.exam-dashboard',['subjects'=>$subjects, 'exams'=>$exams]);
      }
      //add exam
      public function addExam(Request $request)
